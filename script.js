@@ -44,40 +44,13 @@ class MergeSort {
 
 
 }
-let x = [0,5,2,9,7,10,13,3,1,4,6,11,8,1,2,3]
+let x = [6,8,1,5,3,4,2,7,9]
 let newMerge = new MergeSort(x);
 let sortedArr = newMerge.sort();
 
 class Node {
     constructor(value) {
-        this.node = value;
-    }
-}
-
-    //Balanced binary search tree
-class BST {
-    constructor(value) {
-        this.array = value;
-    }
-    
-    createBST(array = this.array, lowIndex = 0, highIndex = this.array.length - 1) {
-        while(lowIndex <= highIndex) {
-            let mid = Math.floor((lowIndex + highIndex) / 2)
-            let node = new Node(array[mid])
-            let left = this.createBST(array, lowIndex, mid - 1);
-            let right = this.createBST(array, mid + 1, highIndex);
-            return node;
-        }
-
-        return left, right;
-
-    }
-}
-
-
-class Node {
-    constructor(value) {
-        this.node = value;
+        this.data = value;
         this.left = null;
         this.right = null;
     }
@@ -87,21 +60,71 @@ class Node {
     setLeft(value) {
         this.left = value
     }
-    toString() {
-        return JSON.stringify(this.node)
+}
+
+class Tree {
+
+    prototype(value) {
+        this.root = value;
     }
 }
-function createBST(array, lowIndex = 0, highIndex = array.length - 1) {
-    let mid = Math.floor((lowIndex + highIndex) / 2)
-    var node = new Node(array[mid])
-    while(lowIndex <= highIndex) {
-        node.setRight(createBST(array, mid + 1, highIndex));
-        node.setLeft(createBST(array, lowIndex, mid - 1));
-        return node;
+
+    //Balanced binary search tree
+class BST {
+    constructor() {
+        this.BST = null;
+    }
+
+    prettyPrint(node, prefix = '', isLeft = true) {
+        
+        if (node.right !== null) {
+          this.prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+        }
+        console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+        if (node.left !== null) {
+          this.prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+        }
+
+      }
+    
+    
+    createBST(array, lowIndex = 0, highIndex = array.length - 1) {
+        let mid = Math.floor((lowIndex + highIndex) / 2)
+        var node = new Node(array[mid])
+        while(lowIndex <= highIndex) {
+            node.setRight(this.createBST(array, mid + 1, highIndex));
+            node.setLeft(this.createBST(array, lowIndex, mid - 1));
+            this.BST = node;
+            return node;
+        }
+        return null;
     }
     
-    return;
+    insert(value, bst = this.BST) {
+        
+        if(bst.data > value) {
+            if(bst.left != null)
+            this.insert(value, bst.left);
+            else
+            return bst.left = new Node(value);
+        }
+        if(bst.data < value){
+            if(bst.right != null)
+            this.insert(value, bst.right)
+            else
+            return bst.right = new Node(value);
+        } 
+        
+    }
 
+    delete() {
+
+    }
 }
-
-console.log(JSON.stringify(createBST([1,2,3,4,5,6,7,8,9])))
+let bst = new BST()
+bst.createBST(sortedArr);
+bst.insert(10)
+bst.insert(11)
+console.log(JSON.stringify(bst.BST))
+bst.prettyPrint(bst.BST)
+// bst.prettyPrint(bst.BST)
