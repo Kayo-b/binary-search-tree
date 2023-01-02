@@ -44,10 +44,10 @@ class MergeSort {
 
 
 }
-let x = [6,8,1,5,3,4,2,7,9]
+let x = [30,50,20,40,32,34,36,70,60,65,80,85,75]
 let newMerge = new MergeSort(x);
 let sortedArr = newMerge.sort();
-
+console.log(sortedArr)
 class Node {
     constructor(value) {
         this.data = value;
@@ -92,8 +92,8 @@ class BST {
     
     
     createBST(array, lowIndex = 0, highIndex = array.length - 1) {
-        let mid = Math.floor((lowIndex + highIndex) / 2)
-        var node = new Node(array[mid])
+        let mid = Math.floor((lowIndex + highIndex) / 2);
+        var node = new Node(array[mid]);
         while(lowIndex <= highIndex) {
             node.setRight(this.createBST(array, mid + 1, highIndex));
             node.setLeft(this.createBST(array, lowIndex, mid - 1));
@@ -120,40 +120,128 @@ class BST {
         
     }
 
-    // delete(value, bst = this.BST) {
-    //     //delete leaf - no rule, just delete
-    //     if(bst.data === value){
-    //         if(bst.right === null && bst.left === null){
+    delete(value, bst = this.BST) {
+        //Right Side
+        if(bst.right != null && bst.right.data === value){
+            //delete leaf - no rule, just delete
+            if(bst.right.right === null && bst.right.left === null) {
+                bst.right = null;   
+                return;
+            }
+            //if one of the two nodes arent null, take the not null node and substitute it for the deleted node
+            if(bst.right.right != null && bst.right.left === null ||
+                bst.right.right === null && bst.right.left != null) {
+                if(bst.right.right != null) {
+                    bst.right = bst.right.right;
+                } else {
+                    bst.right = bst.right.left;
+                }
+                return;
+            }
+            if(bst.right.right != null && bst.right.left != null) {
+                //go to right node: 
+                //Case1: if r-node has 2 child nodes take the left child node and use it to substitute the value that will be deleted. 
+                if(bst.right.right.right != null && bst.right.right.left != null ) {
+                    let tempRight = bst.right.right;
+                    let tempLeft = bst.right.left;
+                    bst.right = bst.right.right.left;
+                    bst.right.right = tempRight;
+                    bst.right.left = tempLeft;
+                    bst.right.right.left = null;
+                //Case2: if it doesnt have 2 child nodes, that means that the next biggest value is the right node itself, so just substitute it.
+                } else {
+                    let temp = bst.right.left;
+                    bst.right = bst.right.right;
+                    bst.right.left = temp;
+                }
+                return;
+            }
+            
+        }
+        //Left Side
+        if(bst.left != null && bst.left.data === value) {
+            //delete leaf - no rule, just delete
+            if(bst.left.right === null && bst.left.left === null) {
+                bst.left = null;
+                return;
+            }
+            //if one of the two nodes arent null, take the not null node and substitute it for the deleted node
+            if(bst.left.right != null && bst.left.left === null ||
+                bst.left.right === null && bst.left.left != null) {
+                if(bst.left.right != null) {
+                    bst.left = bst.left.right;
+                } else {
+                    bst.left = bst.left.left;
+                }
+                return;
+            }
+            //if there are two child nodes, search for next highest value and substitute the deleted value with it. 
+            if(bst.left.right != null && bst.left.left != null) {
+                //go to left node:  
+                //Case1: if L-node has 2 child nodes take the left child node and use it to substitute the value that will be deleted.
+                if(bst.left.right.right != null && bst.left.right.left != null ) {
+                    let tempRight = bst.left.right;
+                    let tempLeft = bst.left.left;
+                    bst.left = bst.left.right.left;
+                    bst.left.right = tempRight;
+                    bst.left.left = tempLeft;
+                    bst.left.right.left = null;
+                //Case2: if it doesnt have 2 child nodes, that means that the next biggest value is the left node itself, so just substitute it.
+                } else {
+                    let temp = bst.left.left
+                    bst.left = bst.left.right;
+                    bst.left.left = temp;
+                }
+                return;
+            }
 
-    //         }
-    //     }
-    //     if(bst.data > value) {
-    //         // if(bst.right === null && bst.left === null)
+        }
+        if(bst.data > value) {
+            if(bst.left != null) this.delete(value, bst.left);
+            return;
+        }
+        if(bst.data < value){
+            if(bst.right != null) this.delete(value, bst.right);
+            return;
+        } 
 
-    //         if(bst.left != null)
-    //         this.delete(value, bst.left);
-    //         else
-    //         return bst.left = new Node(value);
-    //     }
-    //     if(bst.data < value){
-    //         if(value.right === null && value.left === null) 
-    //         if(bst.right != null)
-    //         this.delete(value, bst.right)
-    //         else
-    //         return bst.right = new Node(value);
-    //     } 
+        //delete node with one child - child substitutes deleted node
+        //delete node with two childs - find next biggest number from the number that is being removed and switch 
+    }
+
+    find(value, bst = this.BST) {
+        if(bst.data === value) {
+            return bst;
+        }
+        if(bst.data > value) {
+            if(bst.left != null) return this.find(value, bst.left);
+        }
+        if(bst.data < value){
+            if(bst.right != null) return this.find(value, bst.right);
+        } 
+
+    }
+
+    levelOrder(bst = this.BST) {
+        //Send Root node to queue > read root node and save it > send its children to queue > repeat recursively or with interations
+        let arr = [];
+        let arr2 = [];
+        arr.push(bst);
+        while(arr.length != 0) {
+            if(arr[0].left != null) arr.push(arr[0].left);
+            if(arr[0].right != null) arr.push(arr[0].right);
+            arr2.push(arr.shift().data)
+        }
+        console.log(arr2)
+    }
+
+    levelOrderRecursive(bst = this.BST) {
         
-    //     if(value.right === null && value.left === null) 
-
-    //     //delete node with one child - child substitutes deleted node
-    //     //delete node with two childs - find next biggest number from the number that is being removed and switch 
-    // }
+    }
 }
 let bst = new BST()
 bst.createBST(sortedArr);
-bst.insert(10)
-bst.insert(11)
-console.log(JSON.stringify(bst.BST))
-console.log(bst.BST.right.left)
-bst.prettyPrint(bst.BST)
+// console.log(JSON.stringify(bst.BST))
+bst.levelOrderRecursive();
+bst.prettyPrint(bst.BST);
 // bst.prettyPrint(bst.BST)
