@@ -1,1 +1,2 @@
-console.log(arr)
+
+bst.prettyPrint(bst.BST);

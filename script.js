@@ -44,7 +44,7 @@ class MergeSort {
 
 
 }
-let x = [30,50,20,40,32,34,36,70,60,65,80,85,75]
+let x = [30,50,20,19,59,40,32,34,36,70,60,65,80,85,75]
 let newMerge = new MergeSort(x);
 let sortedArr = newMerge.sort();
 console.log(sortedArr)
@@ -235,13 +235,57 @@ class BST {
         console.log(arr2)
     }
 
-    levelOrderRecursive(bst = this.BST) {
-        
+    levelOrderRecursive(bst = this.BST, arr = [], queue = []) {
+        if(bst === null) return;
+        //visit the node and save it in an array
+        arr.push(bst.data);
+        //push two child nodes to queue, these will be visited in the next recursion
+        queue.push(bst.left);
+        queue.push(bst.right);
+        //while loop keeps removing first element from queue and sending it to recursion while queue has elements in it.
+        while(queue.length > 0) {
+            let level = queue[0];
+            queue.shift();
+            this.levelOrderRecursive(level, arr, queue);
+        }
+
+        return arr
     }
+
+    inorder(bst = this.BST, arr = []) {
+        //transverse left side and get all smaller values
+        if(bst === null) return
+        arr.push(bst.data);
+        this.inorder(bst.left, arr);
+        this.inorder(bst.right, arr);
+        let newArr = new MergeSort(arr)
+        return newArr.sort()
+
+    }
+
+    preorder(bst = this.BST, arr = []) {
+        if(bst === null) return
+        arr.push(bst.data);
+        this.preorder(bst.left, arr);
+        this.preorder(bst.right, arr);
+        return arr
+    }
+
+    postorder(bst = this.BST, arr = []) {
+        if(bst === null) return
+        arr.unshift(bst.data)
+        this.postorder(bst.right, arr)
+        this.postorder(bst.left, arr)
+
+        return arr
+
+    }
+
+
 }
 let bst = new BST()
 bst.createBST(sortedArr);
 // console.log(JSON.stringify(bst.BST))
-bst.levelOrderRecursive();
+console.log(bst.postorder())
 bst.prettyPrint(bst.BST);
 // bst.prettyPrint(bst.BST)
