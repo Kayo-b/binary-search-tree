@@ -44,10 +44,11 @@ class MergeSort {
 
 
 }
-let x = [30,50,20,19,59,40,32,34,36,70,60,65,80,85,75]
+let x = [30,50,20,31,59,40,32,34,36,70,60,65,80,85,75]
 let newMerge = new MergeSort(x);
 let sortedArr = newMerge.sort();
-console.log(sortedArr)
+
+
 class Node {
     constructor(value) {
         this.data = value;
@@ -276,9 +277,36 @@ class BST {
         arr.unshift(bst.data)
         this.postorder(bst.right, arr)
         this.postorder(bst.left, arr)
-
         return arr
 
+    }
+
+    height(value) {
+        let root = this.find(value);
+        let temp = 0
+        let heightRecursiv = (x, count = 0) => {
+            if(x === null) return 
+            count += 1;
+            heightRecursiv(x.left, count);
+            heightRecursiv(x.right, count);
+            if(temp < count) temp = count;
+            return temp-1;
+        }
+        return heightRecursiv(root);
+    }
+
+    depth(value, bst = this.BST, count = 0) {
+        if(bst === null) return;
+        if(bst.data === value) return count;
+        count += 1;
+        let x = this.depth(value, bst.right, count);
+        let y = this.depth(value, bst.left, count);
+        if(x != undefined) return x;
+        if(y != undefined) return y;
+    }
+
+    isBalanced() {
+        
     }
 
 
@@ -287,5 +315,10 @@ let bst = new BST()
 bst.createBST(sortedArr);
 // console.log(JSON.stringify(bst.BST))
 console.log(bst.postorder())
+bst.insert(23);
+bst.insert(22);
+bst.insert(87);
 bst.prettyPrint(bst.BST);
+console.log(bst.depth(60));
+
 // bst.prettyPrint(bst.BST)

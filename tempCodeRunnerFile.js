@@ -1,2 +1,1 @@
-
-bst.prettyPrint(bst.BST);
+if(x != undefined) console.log(x);
