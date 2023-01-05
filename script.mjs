@@ -32,7 +32,7 @@ class MergeSort {
     }
 
     sort(array = this.array, lowestIndex = 0, highestIndex = this.array.length - 1) {
-
+        // array = this.removeDuplicates(array)
         while(lowestIndex < highestIndex) {
             let middle = Math.floor((lowestIndex + highestIndex) / 2);
             let array1 = this.sort(array, lowestIndex, middle);
@@ -41,14 +41,11 @@ class MergeSort {
         }
         return this.merge([array[highestIndex]], [])
     }
+    
+
 
 
 }
-let x = [30,50,20,31,59,40,32,34,36,70,60,65,80,85,75]
-let newMerge = new MergeSort(x);
-let sortedArr = newMerge.sort();
-
-
 class Node {
     constructor(value) {
         this.data = value;
@@ -74,7 +71,7 @@ class Tree {
 }
 
     //Balanced binary search tree
-class BST {
+export default class BST {
     constructor() {
         this.BST = null;
     }
@@ -90,14 +87,31 @@ class BST {
         }
 
       }
-    
+
+    removeDuplicates(arr1) {
+        
+        for(let x = 0; x < arr1.length; x++) {
+            for(let y = x+1; y < arr1.length; y++) {
+                if(arr1[x] === arr1[y]) {
+                    arr1.splice(y,1);
+                    y -= 1;
+                }
+            }
+        }
+        
+        return this.createBST(arr1)
+    }
     
     createBST(array, lowIndex = 0, highIndex = array.length - 1) {
+        let sortedArr = new MergeSort(array);
+        // sortedArr.removeDuplicates()
+        // sortedArr = sortedArr.removeDuplicates();
+        sortedArr = sortedArr.sort();
         let mid = Math.floor((lowIndex + highIndex) / 2);
-        var node = new Node(array[mid]);
+        var node = new Node(sortedArr[mid]);
         while(lowIndex <= highIndex) {
-            node.setRight(this.createBST(array, mid + 1, highIndex));
-            node.setLeft(this.createBST(array, lowIndex, mid - 1));
+            node.setRight(this.createBST(sortedArr, mid + 1, highIndex));
+            node.setLeft(this.createBST(sortedArr, lowIndex, mid - 1));
             this.BST = node;
             return node;
         }
@@ -233,7 +247,6 @@ class BST {
             if(arr[0].right != null) arr.push(arr[0].right);
             arr2.push(arr.shift().data)
         }
-        console.log(arr2)
     }
 
     levelOrderRecursive(bst = this.BST, arr = [], queue = []) {
@@ -285,40 +298,63 @@ class BST {
         let root = this.find(value);
         let temp = 0
         let heightRecursiv = (x, count = 0) => {
-            if(x === null) return 
+            if (x === null) return 
             count += 1;
             heightRecursiv(x.left, count);
             heightRecursiv(x.right, count);
-            if(temp < count) temp = count;
+            if (temp < count) temp = count;
             return temp-1;
         }
         return heightRecursiv(root);
     }
 
     depth(value, bst = this.BST, count = 0) {
-        if(bst === null) return;
-        if(bst.data === value) return count;
+        if (bst === null) return;
+        if (bst.data === value) return count;
         count += 1;
         let x = this.depth(value, bst.right, count);
         let y = this.depth(value, bst.left, count);
-        if(x != undefined) return x;
-        if(y != undefined) return y;
+        if (x != undefined) return x;
+        if (y != undefined) return y;
     }
 
-    isBalanced() {
-        
+    isBalanced(bst = this.BST) {
+        //if height difference between L and R tree is > 1, return false, else return true.
+        if(bst.right != null && bst.left != null) {
+            if(this.height(bst.left.data) - this.height(bst.right.data) > 1 ||
+            this.height(bst.right.data) - this.height(bst.left.data) > 1) {
+                return false;
+            }
+            let left = this.isBalanced(bst.left);
+            if (left === false) return left;
+            let right = this.isBalanced(bst.right);
+            if (right === false) return right;
+
+            return true;
+        }
+    }
+
+    rebalance() {
+        this.createBST(this.inorder())
     }
 
 
 }
-let bst = new BST()
-bst.createBST(sortedArr);
-// console.log(JSON.stringify(bst.BST))
-console.log(bst.postorder())
-bst.insert(23);
-bst.insert(22);
-bst.insert(87);
-bst.prettyPrint(bst.BST);
-console.log(bst.depth(60));
 
+// let x = [30,50,20,31,59,40,32,34,36,70,60,30,65,34,80,85,75,75]
+// // let newMerge 
+
+// let bst = new BST()
+// bst.removeDuplicates(x);
+// bst.prettyPrint(bst.BST);
+// console.log(bst.BST)
+// console.log(bst.postorder())
+// bst.insert(23);
+// bst.insert(87);
+// bst.insert(88);
+// bst.insert(20);
 // bst.prettyPrint(bst.BST)
+// console.log(bst.find(40))
+// console.log(bst.isBalanced())
+// bst.rebalance()
+// console.log(bst.isBalanced())
