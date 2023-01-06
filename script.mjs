@@ -247,6 +247,8 @@ export default class BST {
             if(arr[0].right != null) arr.push(arr[0].right);
             arr2.push(arr.shift().data)
         }
+
+        return arr2
     }
 
     levelOrderRecursive(bst = this.BST, arr = [], queue = []) {
@@ -267,7 +269,7 @@ export default class BST {
     }
 
     inorder(bst = this.BST, arr = []) {
-        //transverse left side and get all smaller values
+        //traverse left side and get all smaller values
         if(bst === null) return
         arr.push(bst.data);
         this.inorder(bst.left, arr);
@@ -340,21 +342,3 @@ export default class BST {
 
 
 }
-
-// let x = [30,50,20,31,59,40,32,34,36,70,60,30,65,34,80,85,75,75]
-// // let newMerge 
-
-// let bst = new BST()
-// bst.removeDuplicates(x);
-// bst.prettyPrint(bst.BST);
-// console.log(bst.BST)
-// console.log(bst.postorder())
-// bst.insert(23);
-// bst.insert(87);
-// bst.insert(88);
-// bst.insert(20);
-// bst.prettyPrint(bst.BST)
-// console.log(bst.find(40))
-// console.log(bst.isBalanced())
-// bst.rebalance()
-// console.log(bst.isBalanced())
